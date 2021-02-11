@@ -1,17 +1,20 @@
-// const searchSongs = () => {
-//     const searchText = document.getElementById('search-field').value;
-//     const url = (`https://api.lyrics.ovh/suggest/${searchText}`);
-//     fetch(url)
-//         .then(res => res.json())
-//         .then(data => displaySong(data.data));
-// }
-const searchSongs = async () => {
+const searchSongs = () => {
     const searchText = document.getElementById('search-field').value;
     const url = (`https://api.lyrics.ovh/suggest/${searchText}`);
-    const res = await fetch(url);
-    const data = await res.json();
-    displaySong(data.data);
+    fetch(url)
+        .then(res => res.json())
+        .then(data => displaySong(data.data))
+        //Strategy to catch error in fetch system
+        // .catch(error => displayError(error)); 
+        .catch(error => displayError('Something Went Wrong!! Please Try Again Letter'));
 }
+// const searchSongs = async () => {
+//     const searchText = document.getElementById('search-field').value;
+//     const url = (`https://api.lyrics.ovh/suggest/${searchText}`);
+//     const res = await fetch(url);
+//     const data = await res.json();
+//     displaySong(data.data);
+// }
 
 const displaySong = (songs) => {
     const songContainer = document.getElementById('song-container');
@@ -41,12 +44,22 @@ const displaySong = (songs) => {
 //     .then(data => displayLyrics(data.lyrics))
 const getLyric = async (artist, title) => {
     const url = `https://api.lyrics.ovh/v1/${artist}/${title}`
-    const res = await fetch(url);
-    const data = await res.json();
-    displayLyrics(data.lyrics);
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        displayLyrics(data.lyrics);
+    }
+    catch (error) {
+        displayError('Sorry! Failed to load lyrics! Please try letter!!');
+    }
 }
 
 const displayLyrics = lyrics => {
     const lyricDiv = document.getElementById('song-lyrics');
     lyricDiv.innerText = lyrics;
+}
+
+const displayError = error => {
+    const errorTag = document.getElementById('error-massage');
+    errorTag.innerText = error;
 }
