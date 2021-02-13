@@ -1,6 +1,7 @@
 const searchSongs = () => {
     const searchText = document.getElementById('search-field').value;
     const url = (`https://api.lyrics.ovh/suggest/${searchText}`);
+    toggleSpinner(true);
     fetch(url)
         .then(res => res.json())
         .then(data => displaySong(data.data))
@@ -34,8 +35,16 @@ const displaySong = (songs) => {
             <button onclick="getLyric('${song.artist.name}', '${song.title}')" class="btn btn-success">Get Lyrics</button>
         </div>`
         songContainer.appendChild(songDiv);
+        toggleSpinner(false);
     });
 }
+
+document.getElementById('search-field').addEventListener('keypress', function (event) {
+    if (event.key == 'Enter') {
+        console.log('search');
+        document.getElementById('search-button').click();
+    }
+})
 
 // const getLyric = (artist, title) => {
 //     const url = `https://api.lyrics.ovh/v1/${artist}/${title}`
@@ -62,4 +71,16 @@ const displayLyrics = lyrics => {
 const displayError = error => {
     const errorTag = document.getElementById('error-massage');
     errorTag.innerText = error;
+}
+
+const toggleSpinner = (show) => {
+    const spinner = document.getElementById('loading-songs');
+    if (show) {
+        spinner.classList.remove('d-none');
+        spinner.classList.add('d-flex');
+    } else {
+        spinner.classList.add('d-none');
+        spinner.classList.remove('d-flex');
+    }
+
 }
